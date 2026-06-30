@@ -1,7 +1,6 @@
 {
   "cache": {
     "cachePriming": {
-      "enabled": true,
       "urls": [
         "/news",
         "/blog",

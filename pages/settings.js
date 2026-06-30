@@ -22,7 +22,7 @@ const STEPS = [
 ];
 
 export default function Settings({ config }) {
-  const enabled = config?.cache?.cachePriming?.enabled ?? false;
+  const enabled = Array.isArray(config?.cache?.cachePriming?.urls) && config.cache.cachePriming.urls.length > 0;
   const urls    = config?.cache?.cachePriming?.urls ?? [];
 
   return (
@@ -37,9 +37,8 @@ export default function Settings({ config }) {
       <div style={{ ...s.banner, ...(enabled ? s.bannerOn : s.bannerOff) }}>
         <span style={s.bannerDot(enabled)} />
         <span>
-          Cache priming is <strong>{enabled ? "enabled" : "disabled"}</strong> in{" "}
-          <code style={s.code}>launch.json</code>.
-          {!enabled && " Set \"enabled\": true to activate on next deploy."}
+          Cache priming is <strong>{enabled ? "active" : "not configured"}</strong>
+          {" "}— {enabled ? `${urls.length} URL${urls.length !== 1 ? "s" : ""} will be primed on next deploy.` : "Add URLs to cache.cachePriming.urls in launch.json to activate."}
         </span>
       </div>
 
