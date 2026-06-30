@@ -3,10 +3,15 @@ import { useRouter } from "next/router";
 
 const NAV = [
   { href: "/", label: "Home" },
+  { href: "/news", label: "News" },
   { href: "/blog", label: "Blog" },
   { href: "/products", label: "Products" },
+  { href: "/pricing", label: "Pricing" },
   { href: "/about", label: "About" },
+  { href: "/faq", label: "FAQ" },
   { href: "/docs", label: "Docs" },
+  { href: "/contact", label: "Contact" },
+  { href: "/settings", label: "⚙ Settings" },
 ];
 
 export default function Layout({ children }) {

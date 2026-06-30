@@ -1,0 +1,18 @@
+{
+  "cache": {
+    "cachePriming": {
+      "enabled": true,
+      "urls": [
+        "/news",
+        "/blog",
+        "/products",
+        "/pricing",
+        "/about",
+        "/faq",
+        "/docs",
+        "/",
+        "/contact"
+      ]
+    }
+  }
+}

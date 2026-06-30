@@ -1,9 +1,13 @@
 const STRATEGIES = {
-  none:       { label: "No Cache",          color: "#dc2626", bg: "#fef2f2" },
-  short:      { label: "Short  (1 min)",    color: "#d97706", bg: "#fffbeb" },
-  medium:     { label: "Medium (5 min)",    color: "#0891b2", bg: "#ecfeff" },
-  long:       { label: "Long   (1 hour)",   color: "#059669", bg: "#ecfdf5" },
-  "very-long":{ label: "Very Long (24 hr)", color: "#7c3aed", bg: "#f5f3ff" },
+  none:         { label: "No Cache",             color: "#dc2626", bg: "#fef2f2" },
+  "no-cache":   { label: "No Cache (revalidate)", color: "#f97316", bg: "#fff7ed" },
+  "very-short": { label: "Very Short (30 s)",    color: "#e11d48", bg: "#fff1f2" },
+  short:        { label: "Short  (1 min)",        color: "#d97706", bg: "#fffbeb" },
+  medium:       { label: "Medium (5 min)",        color: "#0891b2", bg: "#ecfeff" },
+  "ten-min":    { label: "Medium (10 min)",       color: "#0284c7", bg: "#f0f9ff" },
+  long:         { label: "Long   (1 hour)",       color: "#059669", bg: "#ecfdf5" },
+  "half-day":   { label: "Long   (12 hours)",     color: "#0d9488", bg: "#f0fdfa" },
+  "very-long":  { label: "Very Long (24 hr)",     color: "#7c3aed", bg: "#f5f3ff" },
 };
 
 export default function CacheCard({ strategy, header, renderedAt }) {

@@ -11,44 +11,70 @@ export async function getServerSideProps({ res }) {
 const ROUTES = [
   {
     href: "/",
-    title: "Home  /",
     strategy: "none",
     header: "no-store",
     description: "Always fetched fresh. CDN never caches this page.",
   },
   {
+    href: "/news",
+    strategy: "very-short",
+    header: "public, s-maxage=30, stale-while-revalidate=15",
+    description: "30-second CDN cache — for frequently updating headlines.",
+  },
+  {
     href: "/blog",
-    title: "Blog  /blog",
     strategy: "short",
     header: "public, s-maxage=60, stale-while-revalidate=30",
-    description: "CDN caches for 60 s, then revalidates in the background while serving stale.",
+    description: "CDN caches for 60 s, then revalidates in the background.",
   },
   {
     href: "/products",
-    title: "Products  /products",
     strategy: "medium",
     header: "public, s-maxage=300, stale-while-revalidate=60",
     description: "5-minute CDN cache with a 1-minute stale window.",
   },
   {
+    href: "/pricing",
+    strategy: "ten-min",
+    header: "public, s-maxage=600, stale-while-revalidate=120",
+    description: "10-minute cache — pricing rarely changes mid-session.",
+  },
+  {
     href: "/about",
-    title: "About  /about",
     strategy: "long",
     header: "public, s-maxage=3600, stale-while-revalidate=1800",
     description: "1-hour CDN cache — good for rarely-changing content.",
   },
   {
+    href: "/faq",
+    strategy: "half-day",
+    header: "public, s-maxage=43200, stale-while-revalidate=86400",
+    description: "12-hour cache — FAQs are stable between content updates.",
+  },
+  {
     href: "/docs",
-    title: "Docs  /docs",
     strategy: "very-long",
     header: "public, s-maxage=86400, stale-while-revalidate=43200",
     description: "24-hour CDN cache — suited for stable documentation.",
   },
+  {
+    href: "/contact",
+    strategy: "no-cache",
+    header: "no-cache",
+    description: "Must revalidate with server each time, but response may still be stored.",
+  },
 ];
 
 const STRATEGY_COLOR = {
-  none: "#dc2626", short: "#d97706", medium: "#0891b2",
-  long: "#059669", "very-long": "#7c3aed",
+  none: "#dc2626",
+  "no-cache": "#f97316",
+  "very-short": "#e11d48",
+  short: "#d97706",
+  medium: "#0891b2",
+  "ten-min": "#0284c7",
+  long: "#059669",
+  "half-day": "#0d9488",
+  "very-long": "#7c3aed",
 };
 
 export default function Home({ renderedAt }) {
@@ -70,7 +96,7 @@ export default function Home({ renderedAt }) {
             <div style={s.cardTop}>
               <code style={{ ...s.routeHref, color: STRATEGY_COLOR[r.strategy] }}>{r.href}</code>
             </div>
-            <p style={s.cardTitle}>{r.title.split("  ")[0]}</p>
+            <p style={s.cardTitle}>{r.href}</p>
             <code style={s.cardHeader}>{r.header}</code>
             <p style={s.cardDesc}>{r.description}</p>
           </Link>
