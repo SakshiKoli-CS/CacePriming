@@ -5,19 +5,19 @@
  * Simulates domain-specific URL availability to test cache priming behaviour
  * when some domains return 404 for certain URLs.
  *
- * launch.json has /test/page-1 to /test/page-81 (81 test pages total).
+ * launch.json has /test/page-1 to /test/page-981 (981 test pages total).
  *
- * Tier 1 — domain-1  to domain-25 : pages 1–81  → 200          (all available)
- * Tier 2 — domain-26 to domain-50 : pages 1–55  → 200          (pages 56–81 → 404)
- * Tier 3 — domain-51 to domain-75 : pages 1–30  → 200          (pages 31–81 → 404)
+ * Tier 1 — domain-1  to domain-25 : pages 1–981  → 200          (all available)
+ * Tier 2 — domain-26 to domain-50 : pages 1–500  → 200          (pages 501–981 → 404)
+ * Tier 3 — domain-51 to domain-75 : pages 1–250  → 200          (pages 251–981 → 404)
  *
  * All other routes are passed through to the origin unchanged.
  */
 
 const TIERS = [
-  { min: 1,  max: 25, limit: 81 },
-  { min: 26, max: 50, limit: 55 },
-  { min: 51, max: 75, limit: 30 },
+  { min: 1,  max: 25, limit: 981 },
+  { min: 26, max: 50, limit: 500 },
+  { min: 51, max: 75, limit: 250 },
 ];
 
 function getDomainNum(host) {

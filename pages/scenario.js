@@ -6,12 +6,12 @@ export async function getServerSideProps({ res }) {
 }
 
 const TIERS = [
-  { range: "domain-1 → domain-25",  domains: 25, limit: 81, color: "#059669", bg: "#ecfdf5", label: "Full"    },
-  { range: "domain-26 → domain-50", domains: 25, limit: 55, color: "#0891b2", bg: "#ecfeff", label: "Partial" },
-  { range: "domain-51 → domain-75", domains: 25, limit: 30, color: "#d97706", bg: "#fffbeb", label: "Limited" },
+  { range: "domain-1 → domain-25",  domains: 25, limit: 981, color: "#059669", bg: "#ecfdf5", label: "Full"    },
+  { range: "domain-26 → domain-50", domains: 25, limit: 500, color: "#0891b2", bg: "#ecfeff", label: "Partial" },
+  { range: "domain-51 → domain-75", domains: 25, limit: 250, color: "#d97706", bg: "#fffbeb", label: "Limited" },
 ];
 
-const TOTAL_URLS    = 100;
+const TOTAL_URLS    = 1000;
 const TOTAL_DOMAINS = 75;
 
 function calcTier(tier) {
@@ -118,13 +118,13 @@ export default function Scenario() {
       </div>
 
       <pre style={s.pre}>{`// functions/[proxy].edge.js — tier logic
-// launch.json has /test/page-1 → /test/page-81  (81 test pages)
+// launch.json has /test/page-1 → /test/page-981  (981 test pages, 1000 URLs total)
 
-Tier 1  domain-1  → domain-25  :  pages 1–81   →  200  (all available, pass through)
-Tier 2  domain-26 → domain-50  :  pages 1–55   →  200  (pass through)
-                                  pages 56–81   →  404  (blocked at edge, no origin hit)
-Tier 3  domain-51 → domain-75  :  pages 1–30   →  200  (pass through)
-                                  pages 31–81   →  404  (blocked at edge, no origin hit)
+Tier 1  domain-1  → domain-25  :  pages 1–981  →  200  (all available, pass through)
+Tier 2  domain-26 → domain-50  :  pages 1–500  →  200  (pass through)
+                                  pages 501–981 →  404  (blocked at edge, no origin hit)
+Tier 3  domain-51 → domain-75  :  pages 1–250  →  200  (pass through)
+                                  pages 251–981 →  404  (blocked at edge, no origin hit)
 
 404 response headers:
   Cache-Control: no-store          ← CDN will not cache the 404
