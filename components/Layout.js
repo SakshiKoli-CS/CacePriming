@@ -3,14 +3,25 @@ import { useRouter } from "next/router";
 
 const NAV = [
   { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/status", label: "Status" },
   { href: "/news", label: "News" },
+  { href: "/events", label: "Events" },
   { href: "/blog", label: "Blog" },
+  { href: "/changelog", label: "Changelog" },
   { href: "/products", label: "Products" },
+  { href: "/integrations", label: "Integrations" },
   { href: "/pricing", label: "Pricing" },
+  { href: "/case-studies", label: "Case Studies" },
+  { href: "/press", label: "Press" },
+  { href: "/careers", label: "Careers" },
+  { href: "/partners", label: "Partners" },
+  { href: "/team", label: "Team" },
   { href: "/about", label: "About" },
   { href: "/faq", label: "FAQ" },
   { href: "/docs", label: "Docs" },
   { href: "/contact", label: "Contact" },
+  { href: "/scenario", label: "🧪 Scenario" },
   { href: "/settings", label: "⚙ Settings" },
 ];
 
