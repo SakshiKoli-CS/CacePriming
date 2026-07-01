@@ -77,16 +77,46 @@ function buildContent(pageNum) {
   return { category, author, title, para1, para2, para3, readMin, tags, published };
 }
 
-export async function getServerSideProps({ params, res }) {
-  res.setHeader("Cache-Control", CACHE_HEADER);
+// Named domains — full access, all pages available
+const FULL_ACCESS_DOMAINS = [
+  "priming.contentstackapps.com",
+  "cacepriming.contentstackapps.com",
+  "caching.contentstackapps.com",
+  "sakshikoli.contentstackapps.com",
+];
 
+// Domain-based availability tiers (checked at origin, not edge)
+// Tier 1  domain-1  to domain-24        : all pages available
+// Tier 2  domain-25 to domain-48        : only pages 1–500
+// Tier 3  domain-49 to domain-72        : only pages 1–250
+// Named / unrecognised domains          : all pages available
+function getPageLimitForDomain(host) {
+  if (FULL_ACCESS_DOMAINS.some((d) => host.includes(d))) return null;
+  const match = (host || "").match(/domain-(\d+)\./);
+  if (!match) return null;
+  const n = parseInt(match[1], 10);
+  if (n >= 1  && n <= 24) return 981;
+  if (n >= 25 && n <= 48) return 500;
+  if (n >= 49 && n <= 72) return 250;
+  return null;
+}
+
+export async function getServerSideProps({ params, req, res }) {
   const slug  = params.slug;
   const match = slug.match(/^page-(\d+)$/);
   if (!match) return { notFound: true };
 
   const pageNum = parseInt(match[1], 10);
-  if (pageNum < 1 || pageNum > 1000) return { notFound: true };
+  if (pageNum < 1 || pageNum > 981) return { notFound: true };
 
+  // Check if this page exists on the requesting domain
+  const host  = req.headers.host || "";
+  const limit = getPageLimitForDomain(host);
+  if (limit !== null && pageNum > limit) {
+    return { notFound: true }; // request reached origin, origin says 404
+  }
+
+  res.setHeader("Cache-Control", CACHE_HEADER);
   const content = buildContent(pageNum);
 
   return {

@@ -6,13 +6,13 @@ export async function getServerSideProps({ res }) {
 }
 
 const TIERS = [
-  { range: "domain-1 → domain-25",  domains: 25, limit: 981, color: "#059669", bg: "#ecfdf5", label: "Full"    },
-  { range: "domain-26 → domain-50", domains: 25, limit: 500, color: "#0891b2", bg: "#ecfeff", label: "Partial" },
-  { range: "domain-51 → domain-75", domains: 25, limit: 250, color: "#d97706", bg: "#fffbeb", label: "Limited" },
+  { range: "domain-1 → domain-24",  domains: 24, limit: 981, color: "#059669", bg: "#ecfdf5", label: "Full"    },
+  { range: "domain-25 → domain-48", domains: 24, limit: 500, color: "#0891b2", bg: "#ecfeff", label: "Partial" },
+  { range: "domain-49 → domain-72", domains: 24, limit: 250, color: "#d97706", bg: "#fffbeb", label: "Limited" },
 ];
 
 const TOTAL_URLS    = 1000;
-const TOTAL_DOMAINS = 75;
+const TOTAL_DOMAINS = 76; // 72 domain-N + 4 named domains
 
 function calcTier(tier) {
   const primed  = tier.domains * tier.limit;
@@ -104,27 +104,39 @@ export default function Scenario() {
 
       {/* Edge function files */}
       <h2 style={s.h2}>Edge function files</h2>
-      <div style={s.fileCard}>
-        <div style={s.fileHeader}>
-          <span style={s.fileBadge}>Contentstack Launch</span>
-          <code style={s.fileName}>functions/[proxy].edge.js</code>
+      <div style={s.fileGrid}>
+        <div style={s.fileCard}>
+          <div style={s.fileHeader}>
+            <span style={s.fileBadge}>Origin (Next.js)</span>
+            <code style={s.fileName}>pages/test/[slug].js</code>
+          </div>
+          <p style={s.fileDesc}>
+            <code style={s.code}>getServerSideProps</code> reads <code style={s.code}>req.headers.host</code>,
+            parses the domain number, and returns <code style={s.code}>notFound: true</code> for pages
+            outside that domain's limit. The request always reaches the origin — the origin decides the 404.
+          </p>
         </div>
-        <p style={s.fileDesc}>
-          Runs at the CDN edge on every request before it hits the origin.
-          Uses the standard WinterCG Fetch API — no Next.js or Node.js APIs.
-          404 responses are returned directly from the edge with <code style={s.code}>Cache-Control: no-store</code>,
-          so the origin is never hit for unavailable pages.
-        </p>
+        <div style={s.fileCard}>
+          <div style={s.fileHeader}>
+            <span style={{ ...s.fileBadge, background: "#f3f4f6", color: "#6b7280" }}>Edge (passthrough)</span>
+            <code style={s.fileName}>functions/[proxy].edge.js</code>
+          </div>
+          <p style={s.fileDesc}>
+            Pure passthrough — forwards every request to the origin unchanged.
+            No tier logic at the edge; all domain-aware decisions happen at the origin.
+          </p>
+        </div>
       </div>
 
       <pre style={s.pre}>{`// functions/[proxy].edge.js — tier logic
 // launch.json has /test/page-1 → /test/page-981  (981 test pages, 1000 URLs total)
 
-Tier 1  domain-1  → domain-25  :  pages 1–981  →  200  (all available, pass through)
-Tier 2  domain-26 → domain-50  :  pages 1–500  →  200  (pass through)
-                                  pages 501–981 →  404  (blocked at edge, no origin hit)
-Tier 3  domain-51 → domain-75  :  pages 1–250  →  200  (pass through)
-                                  pages 251–981 →  404  (blocked at edge, no origin hit)
+Tier 1  domain-1  → domain-24  :  pages 1–981  →  200  (all available)
+Tier 2  domain-25 → domain-48  :  pages 1–500  →  200
+                                  pages 501–981 →  404  (origin returns notFound)
+Tier 3  domain-49 → domain-72  :  pages 1–250  →  200
+                                  pages 251–981 →  404  (origin returns notFound)
+Named   4 domains              :  all pages    →  200  (no limit)
 
 404 response headers:
   Cache-Control: no-store          ← CDN will not cache the 404
@@ -214,7 +226,8 @@ const s = {
 
   h2:  { fontSize: "1rem", fontWeight: 700, margin: "2rem 0 0.75rem", color: "#111827" },
 
-  fileCard: { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, padding: "1rem 1.25rem", marginBottom: 16 },
+  fileGrid: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 },
+  fileCard: { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 10, padding: "1rem 1.25rem" },
   fileHeader: { display: "flex", alignItems: "center", gap: 8, marginBottom: 8 },
   fileBadge: { padding: "2px 8px", borderRadius: 9999, fontSize: "0.7rem", fontWeight: 700, background: "#ecfdf5", color: "#059669" },
   fileName: { fontFamily: "monospace", fontSize: "0.8rem", color: "#374151" },
